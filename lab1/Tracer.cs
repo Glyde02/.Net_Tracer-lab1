@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,22 +11,36 @@ namespace lab1
     {
         public string methodName;
         public string className;
-        public int time;
+        public long time;
     }
 
     class Tracer : ITracer
     {
-        private List<TraceResult> traceResult = new List<TraceResult>();
+        private readonly List<TraceResult> traceResult = new List<TraceResult>();
+        private Stopwatch stopwatch;
+        //private syncRoot = new SyncRoot
+
+        public Tracer()
+        {
+            stopwatch = new Stopwatch();
+        }
 
         // вызывается в начале замеряемого метода
         public void StartTrace()
         {
-
+            stopwatch.Start();
         }
 
         // вызывается в конце замеряемого метода 
         public void StopTrace()
         {
+
+            stopwatch.Stop();
+            TraceResult traceRes = new TraceResult();
+            traceRes.time = stopwatch.ElapsedMilliseconds;
+
+
+            traceResult.Add(traceRes);
         }
 
         // получить результаты измерений  

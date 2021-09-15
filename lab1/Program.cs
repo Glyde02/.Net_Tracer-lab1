@@ -14,8 +14,16 @@ namespace lab1
             var tracer = new Tracer();
 
             var foo = new Foo(tracer);
+            foo.MyMethod();
 
-            tracer.GetTraceResult();
+            
+
+            foreach(TraceResult traceRes in tracer.GetTraceResult())
+            {
+                Console.WriteLine(traceRes.time);
+            }
+
+            Console.ReadLine();
 
         }
     }

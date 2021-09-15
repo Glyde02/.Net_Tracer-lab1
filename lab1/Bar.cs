@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace lab1
@@ -18,6 +19,8 @@ namespace lab1
         public void InnerMethod()
         {
             _tracer.StartTrace();
+
+            Thread.Sleep(24);
 
             _tracer.StopTrace();
         }
