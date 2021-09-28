@@ -5,33 +5,77 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace lab1
 {
+    public class Record
+    {
+        [XmlAttribute]
+        public int ID;
+
+        [XmlElement]
+        public ThreadRes res;
+
+        public Record(int key, ThreadRes res)
+        {
+            ID = key;
+            this.res = res;
+        }
+        public Record()
+        {
+
+        }
+    }
+
     class Serializers
     {
 
-        public void toXML(TraceResult result)
+        public void toXML(System.IO.Stream stream, TraceResult result)
         {
-
-            XmlSerializer formatter = new XmlSerializer(typeof(TraceResult));
-
-            using (FileStream fs = new FileStream("persons.xml", FileMode.OpenOrCreate))
+            List<Record> records = new List<Record>();
+            foreach (int key in result.threads.Keys)
             {
-                formatter.Serialize(fs, result);
-
-                Console.WriteLine("Объект сериализован");
+                records.Add(new Record(key, result.threads[key]));
             }
+
+
+            XmlSerializer formatter = new XmlSerializer(typeof(List<Record>));
+            formatter.Serialize(stream, records);
+
+
+            //XmlSerializer formatter = new XmlSerializer(typeof(TraceResult));
+
+            //formatter.Serialize(stream, result.threads);
+
+            //using (FileStream fs = new FileStream("persons.xml", FileMode.OpenOrCreate))
+            //{
+
+
+            //    Console.WriteLine("Объект сериализован");
+            //}
 
         }
 
-        //public void toJSON(TraceRes result)
-        //{
-        //    string jsonString = JsonConvert.SerializeObject(root, Formatting.Indented);
-        //    var stream = new StreamWriter(serializationStream);
-        //    stream.AutoFlush = true;
-        //    stream.Write(jsonString);
-        //}
+        public void toJSON(System.IO.Stream stream, TraceResult result)
+        {
+            List<Record> records = new List<Record>();
+            foreach (int key in result.threads.Keys)
+            {
+                records.Add(new Record(key, result.threads[key]));
+            }
+
+            //string json = JsonSerializer.Serialize<List<Record>>(records);
+            string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+            var stream2 = new StreamWriter(stream);
+            stream2.AutoFlush = true;
+            stream2.Write(json);
+
+            //Console.WriteLine(json);
+        }
 
     }
+
+    
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace lab1
@@ -22,6 +23,16 @@ namespace lab1
         {
             _tracer.StartTrace();
 
+            _bar.InnerMethod();
+
+            _tracer.StopTrace();
+        }
+
+        public void NotMyMethod()
+        {
+            _tracer.StartTrace();
+
+            Thread.Sleep(50);
             _bar.InnerMethod();
 
             _tracer.StopTrace();

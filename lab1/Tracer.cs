@@ -19,11 +19,16 @@ namespace lab1
     class MethodTrace : ITracer
     {
         private Stopwatch stopwatch;
-        private MethodRes method;
+        private MethodRes method = new MethodRes();
 
         public MethodTrace()
         {
             this.stopwatch = new Stopwatch();
+
+            StackTrace trace = new StackTrace();
+            var oneFrame = trace.GetFrame(3);
+            method.set_methodName(oneFrame.GetMethod().Name);
+            method.set_className(oneFrame.GetMethod().ReflectedType.Name);
         }
 
         public void StartTrace()
@@ -37,6 +42,11 @@ namespace lab1
             var time = stopwatch.ElapsedMilliseconds;
             method.set_time(time);
         }
+
+        public void addChildResult(MethodRes methodRes)
+        {
+            this.method.addChildMethod(methodRes);
+        }
         public MethodRes GetTraceRes()
         {
             return method;
@@ -46,54 +56,65 @@ namespace lab1
     class ThreadTrace
     {
         private ThreadRes thread;
-        private Stack<MethodTrace> StackList;
+        private Stack<MethodTrace> stackList = new Stack<MethodTrace>();
 
-        public ThreadTrace()
+
+
+        public ThreadTrace(int ID)
         {
-            
+            this.thread = new ThreadRes();
+            this.thread.id = ID;
         }
 
         public void StartTrace()
         {
             var new_MethodTrace = new MethodTrace();
-            StackList.Push(new_MethodTrace);
-
+            stackList.Push(new_MethodTrace);
             new_MethodTrace.StartTrace();
         }
 
         public void StopTrace()
         {
-            var lastTrace = StackList.Pop();
+            var lastTrace = stackList.Pop();
             lastTrace.StopTrace();
-
             var method = lastTrace.GetTraceRes();
 
-            if (StackList.Count > 0)
+
+
+            if (stackList.Count > 0)
             {
                 //continue next method
+                //create children method's
+
+                var newLastTracer = stackList.Peek();
+                newLastTracer.addChildResult(method);
             }
             else
-            {   
+            {
                 //end of method's list
-                thread.addTime(method.time);
                 thread.addMethod(method);
+                thread.addTime(method.time);                
             }
 
+        }
+
+        public ThreadRes GetTraceRes()
+        {
+            return thread;
         }
     }
 
     class Tracer : ITracer
     {
 
-        private Dictionary<int, ThreadTrace> thread_objects;
-        private TraceResult threads;
+        private Dictionary<int, ThreadTrace> thread_objects = new Dictionary<int, ThreadTrace>();
+        //private TraceResult threads;
         //private TraceResult threads;
 
 
         public Tracer()
         {
-            threads = new TraceResult(); 
-
+            //threads = new TraceResult(); 
         }
 
         // вызывается в начале замеряемого метода
@@ -109,6 +130,8 @@ namespace lab1
             else
             {
                 //create new threadTrace
+                thread = new ThreadTrace(threadID);
+                thread_objects[threadID] = thread;
             }
 
             thread.StartTrace();
@@ -125,22 +148,23 @@ namespace lab1
                 thread_objects[threadID].StopTrace();
             }
 
-
-            //stopwatch.Stop();
-            //TraceResult traceResult = new TraceResult();
-            //traceResult.time = stopwatch.ElapsedMilliseconds;
-            //traceResult.className = type;
-            //traceResult.methodName = method;
-
-            //traceRes.AddRes(traceResult);
-
-            //traceRes.AddRes(traceRes);
         }
 
         // получить результаты измерений  
         public TraceResult GetTraceResult()
         {
-            return threads;
+            var values = thread_objects.Values;
+
+            var results = new Dictionary<int, ThreadRes>();
+            foreach (ThreadTrace value in values)
+            {
+                var threadResult = value.GetTraceRes();
+                results.Add(threadResult.id, threadResult);
+            }
+
+            var result = new TraceResult(results);
+
+            return result;
         }
     }
     
