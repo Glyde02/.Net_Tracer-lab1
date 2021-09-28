@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization.Json;
 
 namespace lab1
 {
@@ -16,9 +17,13 @@ namespace lab1
             var foo = new Foo(tracer);
             foo.MyMethod();
 
-            
+            //string json = DataContractJsonSerializer
+            //Console.WriteLine(json);
 
-            foreach(TraceResult traceRes in tracer.GetTraceResult())
+            var serializer = new Serializers();
+            serializer.toXML(tracer.GetTraceResult());
+
+            foreach (TraceResult traceRes in tracer.GetTraceResult())
             {
                 Console.WriteLine(traceRes.time);
             }
