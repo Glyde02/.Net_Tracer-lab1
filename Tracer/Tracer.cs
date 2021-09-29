@@ -12,11 +12,11 @@ namespace TracerLib
     {
         void StartTrace();
         void StopTrace();
-        //List<TraceResult> GetTraceResult();
+        TraceResult GetTraceResult();
     }
 
 
-    class MethodTrace : ITracer
+    class MethodTrace
     {
         private Stopwatch stopwatch;
         private MethodRes method = new MethodRes();
@@ -45,7 +45,7 @@ namespace TracerLib
 
         public void addChildResult(MethodRes methodRes)
         {
-            this.method.addChildMethod(methodRes);
+            this.method.addChild(methodRes);
         }
         public MethodRes GetTraceRes()
         {
@@ -106,16 +106,8 @@ namespace TracerLib
 
     public class Tracer : ITracer
     {
-
         private Dictionary<int, ThreadTrace> thread_objects = new Dictionary<int, ThreadTrace>();
-        //private TraceResult threads;
-        //private TraceResult threads;
 
-
-        public Tracer()
-        {
-            //threads = new TraceResult(); 
-        }
 
         // вызывается в начале замеряемого метода
         public void StartTrace()

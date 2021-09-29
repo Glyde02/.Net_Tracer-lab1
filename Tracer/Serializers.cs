@@ -11,10 +11,11 @@ namespace TracerLib
 {
     public class Record
     {
-        [XmlAttribute]
+        [XmlIgnore]
+        [JsonIgnore]
         public int ID;
 
-        [XmlElement]
+        [XmlElement(ElementName = "Thread")]
         public ThreadRes res;
 
         public Record(int key, ThreadRes res)
@@ -24,40 +25,28 @@ namespace TracerLib
         }
         public Record()
         {
-
         }
     }
 
     public class Serializers
     {
 
-        public void toXML(System.IO.Stream stream, TraceResult result)
+        public string toXML(TraceResult result)
         {
             List<Record> records = new List<Record>();
             foreach (int key in result.threads.Keys)
             {
                 records.Add(new Record(key, result.threads[key]));
             }
-
 
             XmlSerializer formatter = new XmlSerializer(typeof(List<Record>));
-            formatter.Serialize(stream, records);
+            var stringWriter = new StringWriter();
+            formatter.Serialize(stringWriter, records);
 
-
-            //XmlSerializer formatter = new XmlSerializer(typeof(TraceResult));
-
-            //formatter.Serialize(stream, result.threads);
-
-            //using (FileStream fs = new FileStream("persons.xml", FileMode.OpenOrCreate))
-            //{
-
-
-            //    Console.WriteLine("Объект сериализован");
-            //}
-
+            return stringWriter.ToString();
         }
 
-        public void toJSON(System.IO.Stream stream, TraceResult result)
+        public string toJSON(TraceResult result)
         {
             List<Record> records = new List<Record>();
             foreach (int key in result.threads.Keys)
@@ -65,13 +54,8 @@ namespace TracerLib
                 records.Add(new Record(key, result.threads[key]));
             }
 
-            //string json = JsonSerializer.Serialize<List<Record>>(records);
             string json = JsonConvert.SerializeObject(result, Formatting.Indented);
-            var stream2 = new StreamWriter(stream);
-            stream2.AutoFlush = true;
-            stream2.Write(json);
-
-            //Console.WriteLine(json);
+            return json;
         }
 
     }

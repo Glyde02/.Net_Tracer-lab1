@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using System.Text.Json.Serialization;
 
 namespace TracerLib
 {
@@ -16,7 +18,7 @@ namespace TracerLib
         public string className;
         [XmlAttribute]
         public long time;
-        public readonly List<MethodRes> childMethodsResult = new List<MethodRes>();
+        public readonly List<MethodRes> childMethods = new List<MethodRes>();
 
         public void set_time(long time)
         {
@@ -30,9 +32,9 @@ namespace TracerLib
         {
             this.className = className;
         }
-        public void addChildMethod(MethodRes childMethod)
+        public void addChild(MethodRes childMethod)
         {
-            this.childMethodsResult.Add(childMethod);
+            this.childMethods.Add(childMethod);
         }
 
 
@@ -41,12 +43,14 @@ namespace TracerLib
     [Serializable]
     public class ThreadRes
     {
-        [XmlElement(ElementName = "methods")]
-        public List<MethodRes> methods = new List<MethodRes>();
+        [Newtonsoft.Json.JsonIgnore]
         [XmlAttribute]
         public int id;
         [XmlAttribute]
         public long time;
+        [XmlElement(ElementName = "methods")]
+        public List<MethodRes> methods = new List<MethodRes>();
+
 
         public void addMethod(MethodRes method)
         {
@@ -62,7 +66,7 @@ namespace TracerLib
     [Serializable]
     public class TraceResult
     {
-        //[XmlElement(ElementName = "thread")]
+        //[Newtonsoft.Json.JsonProperty("id")]
         public Dictionary<int, ThreadRes> threads { get; private set; }
 
         public TraceResult()

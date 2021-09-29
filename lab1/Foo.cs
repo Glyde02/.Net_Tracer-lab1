@@ -14,7 +14,7 @@ namespace lab1
         private Bar _bar;
         private ITracer _tracer;
 
-        internal Foo(ITracer tracer)
+        public Foo(ITracer tracer)
         {
             _tracer = tracer;
             _bar = new Bar(_tracer);

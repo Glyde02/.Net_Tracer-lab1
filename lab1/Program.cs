@@ -15,7 +15,6 @@ namespace lab1
         {
 
             var tracer = new Tracer();
-
             var foo = new Foo(tracer);
 
             var thread = new Thread(foo.MyMethod);
@@ -24,28 +23,24 @@ namespace lab1
 
             thread = new Thread(foo.NotMyMethod);
             thread.Start();
+            foo.NotMyMethod();
             thread.Join();
-
 
             var res = tracer.GetTraceResult();
 
 
+            //Outputing
+
+            var writer = new Writer();
             var serialize = new Serializers();
-            var consoleStream = Console.OpenStandardOutput();
-            serialize.toXML(consoleStream, res);
 
+            string outRes = serialize.toXML(res);            
+            writer.toConsole(outRes);
+            writer.toFile(outRes, "xml.txt");
 
+            outRes = serialize.toJSON(res);
+            writer.toConsole(outRes);
 
-            //string json = DataContractJsonSerializer
-            //Console.WriteLine(json);
-
-            //var serializer = new Serializers();
-            //serializer.toXML(tracer.GetTraceResult());
-
-            //foreach (TraceResult traceRes in tracer.GetTraceResult())
-            //{
-            //    Console.WriteLine(traceRes.time);
-            //}
 
             Console.ReadLine();
 
