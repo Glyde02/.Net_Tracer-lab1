@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace lab1
+namespace TracerLib
 {
-    interface ITracer
+    public interface ITracer
     {
         void StartTrace();
         void StopTrace();
@@ -93,7 +93,7 @@ namespace lab1
             {
                 //end of method's list
                 thread.addMethod(method);
-                thread.addTime(method.time);                
+                thread.addTime(method.time);
             }
 
         }
@@ -104,7 +104,7 @@ namespace lab1
         }
     }
 
-    class Tracer : ITracer
+    public class Tracer : ITracer
     {
 
         private Dictionary<int, ThreadTrace> thread_objects = new Dictionary<int, ThreadTrace>();
@@ -143,7 +143,7 @@ namespace lab1
         {
             int threadID = Thread.CurrentThread.ManagedThreadId;
 
-            if(thread_objects.ContainsKey(threadID))
+            if (thread_objects.ContainsKey(threadID))
             {
                 thread_objects[threadID].StopTrace();
             }
@@ -167,5 +167,5 @@ namespace lab1
             return result;
         }
     }
-    
+
 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization.Json;
 using System.Threading;
+using TracerLib;
 
 namespace lab1
 {
@@ -31,7 +32,7 @@ namespace lab1
 
             var serialize = new Serializers();
             var consoleStream = Console.OpenStandardOutput();
-            serialize.toJSON(consoleStream, res);
+            serialize.toXML(consoleStream, res);
 
 
 

@@ -5,10 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using System.Text.Json;
 using Newtonsoft.Json;
 
-namespace lab1
+namespace TracerLib
 {
     public class Record
     {
@@ -29,7 +28,7 @@ namespace lab1
         }
     }
 
-    class Serializers
+    public class Serializers
     {
 
         public void toXML(System.IO.Stream stream, TraceResult result)
@@ -76,6 +75,4 @@ namespace lab1
         }
 
     }
-
-    
 }
